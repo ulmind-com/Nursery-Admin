@@ -31,65 +31,72 @@ export default function Products() {
   };
 
   const filteredItems = items.filter((p) => {
-    if (search && !p.title.toLowerCase().includes(search.toLowerCase()) && !(p.sku || "").toLowerCase().includes(search.toLowerCase()) && !(p.colors || []).some((c: any) => (c.shade_code || "").toLowerCase().includes(search.toLowerCase()))) return false;
+    if (search && !p.title.toLowerCase().includes(search.toLowerCase()) && !(p.sku || "").toLowerCase().includes(search.toLowerCase()) && !(p.plant_spec?.scientific_name || "").toLowerCase().includes(search.toLowerCase())) return false;
     if (catFilter && p.category_id !== catFilter) return false;
     if (statusFilter === "active" && !p.is_active) return false;
     if (statusFilter === "hidden" && p.is_active) return false;
     if (statusFilter === "low_stock" && p.total_stock > (p.low_stock_threshold || 5)) return false;
+    if (statusFilter === "bestseller" && !p.is_bestseller) return false;
     return true;
   });
 
   return (
     <>
       <div className="between">
-        <h1>Products</h1>
-        <Link to="/products/new" className="btn">+ Add Product</Link>
+        <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+          <span className="emoji">🌿</span> Plant Inventory
+        </h1>
+        <Link to="/products/new" className="btn">+ Add Plant</Link>
       </div>
       
-      <div className="card" style={{ marginTop: 18, marginBottom: -18, padding: 12, display: "flex", gap: 12, background: "#fafafa", border: "1px solid #eaeaea" }}>
+      <div className="card" style={{ marginTop: 18, marginBottom: -18, padding: 14, display: "flex", gap: 12, background: "var(--primary-50)", border: "1px solid var(--primary-100)" }}>
         <input 
-          placeholder="Search by title, SKU or shade code..."
+          placeholder="Search by name, SKU or scientific name..."
           value={search} 
           onChange={e => setSearch(e.target.value)} 
-          style={{ flex: 1, margin: 0, padding: "8px 12px" }}
+          style={{ flex: 1, margin: 0, padding: "9px 14px" }}
         />
-        <select value={catFilter} onChange={e => setCatFilter(e.target.value)} style={{ margin: 0, padding: "8px 12px", width: 200 }}>
+        <select value={catFilter} onChange={e => setCatFilter(e.target.value)} style={{ margin: 0, padding: "9px 14px", width: 200 }}>
           <option value="">All Categories</option>
           {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
-        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} style={{ margin: 0, padding: "8px 12px", width: 160 }}>
+        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} style={{ margin: 0, padding: "9px 14px", width: 160 }}>
           <option value="all">All Status</option>
           <option value="active">Active Only</option>
           <option value="hidden">Hidden Only</option>
           <option value="low_stock">Low Stock</option>
+          <option value="bestseller">Bestsellers</option>
         </select>
       </div>
 
       <div className="card" style={{ marginTop: 18 }}>
         {loading ? (
-          <p className="muted">Loading…</p>
+          <p className="muted">Loading plants…</p>
         ) : (
           <table>
             <thead>
-              <tr><th></th><th>Product Info</th><th>Specs & Stats</th><th>Price</th><th>Stock</th><th>Status</th><th></th></tr>
+              <tr><th></th><th>Plant Info</th><th>Specs</th><th>Price</th><th>Stock</th><th>Status</th><th></th></tr>
             </thead>
             <tbody>
               {filteredItems.map((p) => (
                 <React.Fragment key={p.id}>
                   <tr>
-                    <td><img className="thumb" src={p.images?.[0] || p.colors?.[0]?.images?.[0] || "https://via.placeholder.com/60"} /></td>
+                    <td><img className="thumb" src={p.images?.[0] || p.sizes?.[0]?.images?.[0] || "https://via.placeholder.com/60"} /></td>
                     <td>
                       <div style={{ fontWeight: 600 }}>{p.title}</div>
                       <div className="muted" style={{ fontSize: 12 }}>
+                        {p.plant_spec?.scientific_name && <span style={{ fontStyle: "italic" }}>{p.plant_spec.scientific_name} • </span>}
                         {p.brand && <span>{p.brand} • </span>}
                         {p.sku && <span>SKU: {p.sku}</span>}
-                        {!p.sku && !p.brand && <span>No Brand/SKU</span>}
                       </div>
                     </td>
                     <td>
-                      <div style={{ fontSize: 12 }}>
-                        {p.skein_weight && <span style={{ background: "#f0f0f0", padding: "2px 6px", borderRadius: 4, marginRight: 6 }}>{p.skein_weight}g</span>}
-                        {p.yarn_weight && <span style={{ background: "#f0f0f0", padding: "2px 6px", borderRadius: 4 }}>{p.yarn_weight}</span>}
+                      <div style={{ fontSize: 12, display: "flex", gap: 4, flexWrap: "wrap" }}>
+                        {p.plant_spec?.plant_type && <span className="pill green" style={{ fontSize: 10, padding: "2px 8px" }}>{p.plant_spec.plant_type}</span>}
+                        {p.plant_spec?.sunlight && <span className="pill blue" style={{ fontSize: 10, padding: "2px 8px" }}>☀️ {p.plant_spec.sunlight}</span>}
+                        {p.plant_spec?.difficulty_level && <span className="pill yellow" style={{ fontSize: 10, padding: "2px 8px" }}>{p.plant_spec.difficulty_level}</span>}
+                        {p.plant_spec?.pet_safe && <span className="pill green" style={{ fontSize: 10, padding: "2px 8px" }}>🐾</span>}
+                        {p.plant_spec?.air_purifying && <span className="pill blue" style={{ fontSize: 10, padding: "2px 8px" }}>💨</span>}
                       </div>
                       <div className="muted" style={{ fontSize: 11, marginTop: 4 }}>
                         {p.sold_count > 0 ? `🔥 ${p.sold_count} sold` : "0 sold"}
@@ -99,55 +106,55 @@ export default function Products() {
                     <td>
                       {p.struck_price && <span style={{ textDecoration: "line-through", color: "#a79e95", marginRight: 6 }}>₹{p.struck_price}</span>}
                       <b>₹{p.final_price}</b>
-                      {p.off_pct > 0 && <span style={{ color: "#2fae5f" }}> ({p.off_pct}% off)</span>}
+                      {p.off_pct > 0 && <span style={{ color: "var(--green)" }}> ({p.off_pct}% off)</span>}
+                      {p.price_varies && <div className="muted" style={{ fontSize: 11 }}>₹{p.price_from} – ₹{p.price_to}</div>}
                     </td>
                     <td>
-                      <span className="pill" style={{ background: p.total_stock <= 5 ? "#fdecec" : "#eaf7ee", color: p.total_stock <= 5 ? "#e23744" : "#2fae5f" }}>
+                      <span className="pill" style={{ background: p.total_stock <= 5 ? "#fef2f2" : "var(--primary-100)", color: p.total_stock <= 5 ? "var(--red)" : "var(--primary-dark)" }}>
                         {p.total_stock}
                       </span>
                     </td>
-                    <td>{p.is_active ? "Active" : <span className="muted">Hidden</span>}</td>
+                    <td>
+                      <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                        {p.is_active ? <span className="pill green" style={{ fontSize: 11 }}>Active</span> : <span className="muted">Hidden</span>}
+                        {p.is_bestseller && <span className="pill" style={{ fontSize: 10, background: "#fff7ed", color: "#c2410c" }}>🔥</span>}
+                        {p.is_new_arrival && <span className="pill blue" style={{ fontSize: 10 }}>🆕</span>}
+                      </div>
+                    </td>
                     <td className="flex">
                       <Link to={`/products/${p.id}`} className="btn ghost sm">Edit</Link>
                       <button className="btn danger sm" onClick={() => del(p.id, p.title)}>Delete</button>
                     </td>
                   </tr>
                   
-                  {p.colors && p.colors.length > 0 && p.colors.map((c: any, i: number) => {
-                    const cStock = c.stock || 0;
-
+                  {p.sizes && p.sizes.length > 0 && p.sizes.map((s: any, i: number) => {
+                    const sStock = s.stock || 0;
                     return (
-                      <tr key={`${p.id}-col-${i}`} style={{ background: "#fafafa" }}>
+                      <tr key={`${p.id}-size-${i}`} style={{ background: "var(--primary-50)" }}>
                         <td style={{ paddingLeft: 30 }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                            <span style={{ color: "#ccc", fontSize: 16 }}>↳</span>
-                            {c.images?.[0] ? (
-                               <img src={c.images[0]} style={{ width: 40, height: 40, borderRadius: 6, objectFit: "cover" }} />
+                            <span style={{ color: "var(--primary-300)", fontSize: 16 }}>↳</span>
+                            {s.images?.[0] ? (
+                               <img src={s.images[0]} style={{ width: 36, height: 36, borderRadius: 8, objectFit: "cover" }} />
                             ) : (
-                               <div style={{ width: 40, height: 40, borderRadius: 6, background: "#eee" }}></div>
+                               <div style={{ width: 36, height: 36, borderRadius: 8, background: "var(--primary-100)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>🪴</div>
                             )}
                           </div>
                         </td>
                         <td>
-                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                            {c.swatch_image ? (
-                               <img src={c.swatch_image} style={{ width: 20, height: 20, borderRadius: 4, objectFit: "cover", border: "1px solid #e1e1e1" }} />
-                            ) : (
-                               <div style={{ width: 20, height: 20, borderRadius: 4, background: c.hex || "#ccc", border: "1px solid #e1e1e1" }}></div>
-                            )}
-                            <div style={{ fontSize: 13, color: "#444" }}>
-                              {c.shade_code && <span className="pill" style={{ fontSize: 11, padding: "1px 6px", marginRight: 6, background: "#f0f0f0", color: "#555" }}>{c.shade_code}</span>}
-                              {c.name} {c.color_family ? <span style={{ color: "#888" }}>({c.color_family})</span> : ""}
-                            </div>
+                          <div style={{ fontSize: 13, color: "var(--text-light)" }}>
+                            <span style={{ fontWeight: 600 }}>{s.name}</span>
+                            {s.pot_size && <span> • {s.pot_size}</span>}
+                            {s.pot_type && <span> • {s.pot_type}</span>}
                           </div>
                         </td>
-                        <td></td>
+                        <td>{s.height && <span className="muted" style={{ fontSize: 12 }}>📏 {s.height}</span>}</td>
                         <td>
-                          {c.price ? <b style={{ fontSize: 13, color: "#666" }}>₹{c.price}</b> : <span className="muted" style={{ fontSize: 12 }}>Inherits base (₹{p.final_price})</span>}
+                          {s.price ? <b style={{ fontSize: 13, color: "var(--text-light)" }}>₹{s.price}</b> : <span className="muted" style={{ fontSize: 12 }}>Base (₹{p.final_price})</span>}
                         </td>
                         <td>
-                          <span className="pill" style={{ fontSize: 11, padding: "2px 6px", background: cStock <= 5 ? "#fdecec" : "#eaf7ee", color: cStock <= 5 ? "#e23744" : "#2fae5f" }}>
-                            {cStock}
+                          <span className="pill" style={{ fontSize: 11, padding: "2px 8px", background: sStock <= 5 ? "#fef2f2" : "var(--primary-100)", color: sStock <= 5 ? "var(--red)" : "var(--primary-dark)" }}>
+                            {sStock}
                           </span>
                         </td>
                         <td></td>
@@ -157,7 +164,7 @@ export default function Products() {
                   })}
                 </React.Fragment>
               ))}
-              {filteredItems.length === 0 && <tr><td colSpan={7} className="muted">No products found matching filters.</td></tr>}
+              {filteredItems.length === 0 && <tr><td colSpan={7} className="muted">No plants found matching filters.</td></tr>}
             </tbody>
           </table>
         )}

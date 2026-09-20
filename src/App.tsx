@@ -38,7 +38,7 @@ const firstAllowedPath = (): string | null => {
 function NoAccess() {
   return (
     <div style={{ padding: 40, textAlign: "center" }}>
-      <h2>No sections assigned</h2>
+      <h2>🌿 No sections assigned</h2>
       <p className="muted">Your account doesn't have access to any section yet. Please ask the store owner to grant you access.</p>
     </div>
   );
