@@ -33,7 +33,7 @@ const TAGS = ["Journal", "Featured", "Guides", "Behind the scenes", "Care", "Pat
 const today = () => new Date().toISOString().slice(0, 10);
 
 const empty = (): Post => ({
-  title: "", slug: "", excerpt: "", image: "", author: "Royal Wool", tag: "Journal",
+  title: "", slug: "", excerpt: "", image: "", author: "Plant Nursery", tag: "Journal",
   published_at: today(), body: [{ type: "p", text: "", url: "" }],
   link: "", link_label: "", featured: false, published: true, order: 0,
 });
@@ -291,7 +291,7 @@ function Editor({ post, onClose, onSaved }: { post: Post; onClose: () => void; o
 
           <div className="card">
             <label>Heading</label>
-            <input className="blog-title-input" value={f.title} onChange={(e) => setTitle(e.target.value)} placeholder="How to read a yarn label" />
+            <input className="blog-title-input" value={f.title} onChange={(e) => setTitle(e.target.value)} placeholder="Caring for your new indoor plant" />
             <div style={{ marginTop: 14 }}>
               <label>Summary (shown on the journal card)</label>
               <textarea rows={3} value={f.excerpt} onChange={(e) => set("excerpt", e.target.value)} placeholder="One or two lines that make someone want to read it." />
@@ -334,7 +334,7 @@ function Editor({ post, onClose, onSaved }: { post: Post; onClose: () => void; o
                     placeholder={
                       b.type === "h2" ? "Section heading"
                         : b.type === "quote" ? "A line worth pulling out"
-                        : b.type === "link" ? "Button text — e.g. Shop this yarn"
+                        : b.type === "link" ? "Button text — e.g. Shop this plant"
                         : "Write the paragraph…"
                     }
                   />
@@ -343,7 +343,7 @@ function Editor({ post, onClose, onSaved }: { post: Post; onClose: () => void; o
                       style={{ marginTop: 8 }}
                       value={b.url}
                       onChange={(e) => setBlock(i, { url: e.target.value })}
-                      placeholder="https://royalwool.in/products/…"
+                      placeholder="https://mygurden.netlify.app/products/…"
                     />
                   )}
                 </div>
@@ -379,7 +379,7 @@ function Editor({ post, onClose, onSaved }: { post: Post; onClose: () => void; o
                 onBlur={(e) => set("slug", slugify(e.target.value))}
                 placeholder="auto from heading"
               />
-              <p className="muted" style={{ margin: "6px 0 0", fontSize: 12 }}>royalwool.in/blog/{f.slug || "…"}</p>
+              <p className="muted" style={{ margin: "6px 0 0", fontSize: 12 }}>mygurden.netlify.app/blog/{f.slug || "…"}</p>
             </div>
           </div>
 
@@ -402,10 +402,10 @@ function Editor({ post, onClose, onSaved }: { post: Post; onClose: () => void; o
           <div className="card">
             <label>Call-to-action link (optional)</label>
             <p className="muted" style={{ marginTop: 0, fontSize: 12 }}>Shown as a button at the end of the story.</p>
-            <input value={f.link} onChange={(e) => set("link", e.target.value)} placeholder="https://royalwool.in/products/merino" />
+            <input value={f.link} onChange={(e) => set("link", e.target.value)} placeholder="https://mygurden.netlify.app/products/…" />
             <div style={{ marginTop: 12 }}>
               <label>Button text</label>
-              <input value={f.link_label} onChange={(e) => set("link_label", e.target.value)} placeholder="Shop this yarn" />
+              <input value={f.link_label} onChange={(e) => set("link_label", e.target.value)} placeholder="Shop this plant" />
             </div>
           </div>
 

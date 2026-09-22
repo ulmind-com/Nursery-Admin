@@ -87,7 +87,7 @@ export default function Coupons() {
           <input type="checkbox" checked={f.free_shipping} onChange={(e) => set("free_shipping", e.target.checked)} style={{ width: "auto", margin: 0 }} />
           Grants Free Shipping
         </label>
-        <p className="muted" style={{ marginBottom: 16 }}>When on, this coupon will waive the entire delivery fee for the order (highly requested for bulky yarn orders!).</p>
+        <p className="muted" style={{ marginBottom: 16 }}>When on, this coupon will waive the entire delivery fee for the order (highly requested for bulky plant orders!).</p>
         <label>Description</label>
         <input value={f.description} onChange={(e) => set("description", e.target.value)} placeholder="10% off up to ₹150" />
         {err && <div className="err">{err}</div>}

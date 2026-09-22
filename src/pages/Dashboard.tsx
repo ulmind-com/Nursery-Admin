@@ -164,7 +164,7 @@ export default function Dashboard() {
       <div className="dashboard-header">
         <div>
           <h1 className="dashboard-title">Welcome back! 👋</h1>
-          <p className="dashboard-subtitle">Here is what's happening in your Royaall Wool store today.</p>
+          <p className="dashboard-subtitle">Here is what's happening in your nursery today.</p>
         </div>
       </div>
 

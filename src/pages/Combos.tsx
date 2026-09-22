@@ -182,7 +182,7 @@ export default function Combos() {
   return (
     <>
       <h1>Bundle Offers (Combos)</h1>
-      <p className="muted" style={{ marginTop: -12, marginBottom: 24 }}>Create mix-and-match bundle offers. E.g., "Buy any 5 of these wools for ₹375".</p>
+      <p className="muted" style={{ marginTop: -12, marginBottom: 24 }}>Create mix-and-match bundle offers. E.g., "Buy any 3 of these plants for ₹1199".</p>
 
       <div className="card">
         <div className="between">
@@ -201,7 +201,7 @@ export default function Combos() {
         <p className="muted">Example: Quantity = 5, Price = 375 means "Buy 5 for ₹375".</p>
 
         <label>Description (shown to users)</label>
-        <input value={f.description} onChange={(e) => set("description", e.target.value)} placeholder="Buy any 5 matching wools for just ₹375!" />
+        <input value={f.description} onChange={(e) => set("description", e.target.value)} placeholder="Buy any 3 matching plants for just ₹1199!" />
 
         <div className="row" style={{ marginTop: 16 }}>
           <div><label>Start Date (Optional)</label><input type="datetime-local" value={f.start_date} onChange={e => set("start_date", e.target.value)} /></div>

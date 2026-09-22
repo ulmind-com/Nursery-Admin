@@ -1,8 +1,9 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { hasSection, isAdmin, isSuper } from "./auth";
 import { SECTIONS } from "./sections";
 import Admins from "./pages/Admins";
 import Layout from "./components/Layout";
+import ErrorBoundary from "./components/ErrorBoundary";
 import Blog from "./pages/Blog";
 import Categories from "./pages/Categories";
 import Combos from "./pages/Combos";
@@ -47,8 +48,9 @@ function NoAccess() {
 // Gate a route by its section key: allowed -> render; otherwise send the admin
 // to their first accessible section (or a friendly message if they have none).
 function Sec({ k, children }: { k: string; children: React.ReactNode }) {
+  const location = useLocation();
   if (!isAdmin()) return <Navigate to="/login" replace />;
-  if (hasSection(k)) return <>{children}</>;
+  if (hasSection(k)) return <ErrorBoundary resetKey={location.pathname}>{children}</ErrorBoundary>;
   const dest = firstAllowedPath();
   return dest ? <Navigate to={dest} replace /> : <NoAccess />;
 }

@@ -67,10 +67,10 @@ export default function Invoice() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "2px solid #1e293b", paddingBottom: 20, marginBottom: 30 }}>
         <div>
           <h1 style={{ margin: 0, fontSize: 32, letterSpacing: "-1px" }}>
-            <span style={{ color: "#800000", fontWeight: "bold" }}>Royaall</span>{" "}
-            <span style={{ color: "#D4AF37", fontStyle: "italic", fontWeight: 500 }}>Wool</span>
+            <span style={{ color: "#0a5c3e", fontWeight: "bold" }}>Plant</span>{" "}
+            <span style={{ color: "#008B5E", fontStyle: "italic", fontWeight: 500 }}>Nursery</span>
           </h1>
-          <p style={{ margin: "5px 0 0", color: "#64748b", fontSize: 14 }}>Premium Yarn & Wool Retailer</p>
+          <p style={{ margin: "5px 0 0", color: "#64748b", fontSize: 14 }}>Farm-Fresh Plants & Garden Essentials</p>
         </div>
         <div style={{ textAlign: "right" }}>
           <h2 style={{ margin: 0, fontSize: 24, color: "#1e293b", textTransform: "uppercase" }}>Invoice</h2>
@@ -185,7 +185,7 @@ export default function Invoice() {
       {/* Footer / Signature */}
       <div style={{ marginTop: 80, borderTop: "1px solid #e2e8f0", paddingTop: 20, textAlign: "center", fontSize: 12, color: "#64748b" }}>
         <p>This is a computer generated invoice and does not require a signature.</p>
-        <p>Thank you for shopping with Royaall Wool!</p>
+        <p>Thank you for shopping with Plant Nursery!</p>
       </div>
 
       {/* Action Button (Hidden on Print) */}

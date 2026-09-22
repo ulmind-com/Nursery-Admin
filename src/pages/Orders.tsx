@@ -25,7 +25,7 @@ const buildOrderMessage = (o: any) => {
   const addr = [o.address?.house, o.address?.area, o.address?.city, o.address?.state, o.address?.pincode]
     .filter(Boolean).join(", ");
   const lines: string[] = [];
-  lines.push("🧶 *Royaall Wool — Order Details*");
+  lines.push("🌿 *Plant Nursery — Order Details*");
   lines.push("");
   lines.push(`*Order:* ${orderId}`);
   lines.push(`*Date:* ${fmtDate(o.created_at)}`);
@@ -110,7 +110,7 @@ export default function Orders() {
   const handleExport = async () => {
     setExporting(true);
     try {
-      await api.download(`/orders/admin/export?${filterParams().toString()}`, "Orders_Royal_Wool.xlsx");
+      await api.download(`/orders/admin/export?${filterParams().toString()}`, "Orders_Plant_Nursery.xlsx");
     } catch (e: any) {
       alert(e.message || "Export failed");
     }

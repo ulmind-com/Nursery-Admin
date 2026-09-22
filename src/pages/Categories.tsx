@@ -131,8 +131,8 @@ export default function Categories() {
 
       <div className="dashboard-header">
         <div>
-          <h1 className="dashboard-title">Yarn Categories</h1>
-          <p className="dashboard-subtitle">Organize your beautiful wool collections and fibers.</p>
+          <h1 className="dashboard-title">Plant Categories</h1>
+          <p className="dashboard-subtitle">Organize your plant collections and categories.</p>
         </div>
       </div>
 
@@ -222,7 +222,7 @@ export default function Categories() {
                 onTouchEnd={() => saveScale(c.id, scales[c.id] ?? 100)}
                 style={{ width: "100%", accentColor: "#3b82f6" }}
               />
-              <p className="muted" style={{ margin: "4px 0 0 0", fontSize: 13 }}>Adjust how large the wool ball pops out of the pill on the app home screen.</p>
+              <p className="muted" style={{ margin: "4px 0 0 0", fontSize: 13 }}>Adjust how large the icon pops out of the pill on the app home screen.</p>
             </div>
           </div>
 
@@ -261,7 +261,7 @@ export default function Categories() {
              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
           </div>
           <h3 style={{ margin: "0 0 8px 0", color: "#0f172a" }}>No categories yet</h3>
-          <p className="muted" style={{ margin: 0, maxWidth: 400, marginLeft: "auto", marginRight: "auto" }}>Create your first top-level category above (like Animal Fibers) to start organizing your wool inventory.</p>
+          <p className="muted" style={{ margin: 0, maxWidth: 400, marginLeft: "auto", marginRight: "auto" }}>Create your first top-level category above (like Indoor Plants) to start organizing your plant inventory.</p>
         </div>
       )}
     </>

@@ -186,7 +186,7 @@ export default function Analytics() {
 
       <div className="grid-2">
         <div className="fatafati-card">
-          <h3 style={{ margin: "0 0 24px 0", color: "#0f172a", fontSize: 18 }}>Top Selling Yarns</h3>
+          <h3 style={{ margin: "0 0 24px 0", color: "#0f172a", fontSize: 18 }}>Top Selling Plants</h3>
           {data.top_products?.length === 0 ? (
             <div style={{ padding: 40, textAlign: "center", color: "#94a3b8" }}>No products sold yet.</div>
           ) : (

@@ -414,7 +414,7 @@ export default function HomeLayout() {
                           <input
                             value={mediaEditing.subtitle}
                             onChange={(e) => setMediaEditing({ ...mediaEditing, subtitle: e.target.value })}
-                            placeholder="e.g. Small-batch dyed · 50g skein"
+                            placeholder="e.g. Air-purifying · Pet-friendly"
                           />
                         </div>
                       </div>

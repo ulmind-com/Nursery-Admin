@@ -1,7 +1,40 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "../api";
 
-declare const L: any; // Leaflet loaded via CDN
+declare const L: any; // Leaflet, lazy-loaded from CDN by ensureLeaflet()
+
+// Leaflet was assumed to be on the page ("loaded via CDN") but nothing ever
+// loaded it, so opening Settings threw "L is not defined" and white-screened
+// the whole admin. Load it on demand instead, and never let its absence crash
+// the page — the map is a convenience, the form must always render.
+let leafletPromise: Promise<void> | null = null;
+function ensureLeaflet(): Promise<void> {
+  if (typeof L !== "undefined") return Promise.resolve();
+  if (leafletPromise) return leafletPromise;
+  leafletPromise = new Promise<void>((resolve, reject) => {
+    if (!document.querySelector('link[data-leaflet]')) {
+      const css = document.createElement("link");
+      css.rel = "stylesheet";
+      css.href = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css";
+      css.setAttribute("data-leaflet", "1");
+      document.head.appendChild(css);
+    }
+    const existing = document.querySelector<HTMLScriptElement>('script[data-leaflet]');
+    if (existing) {
+      existing.addEventListener("load", () => resolve(), { once: true });
+      existing.addEventListener("error", () => reject(new Error("leaflet")), { once: true });
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";
+    script.async = true;
+    script.setAttribute("data-leaflet", "1");
+    script.addEventListener("load", () => resolve(), { once: true });
+    script.addEventListener("error", () => { leafletPromise = null; reject(new Error("leaflet")); }, { once: true });
+    document.body.appendChild(script);
+  });
+  return leafletPromise;
+}
 
 export default function Settings() {
   const [s, setS] = useState<any>(null);
@@ -22,7 +55,18 @@ export default function Settings() {
   // Initialize Leaflet map once settings are loaded
   useEffect(() => {
     if (!s || !mapRef.current || leafletMap.current) return;
+    let cancelled = false;
 
+    ensureLeaflet().then(() => {
+      if (cancelled || !mapRef.current || leafletMap.current) return;
+      try {
+        initMap();
+      } catch {
+        /* map is optional — never break the settings form over it */
+      }
+    }).catch(() => { /* CDN blocked: skip the map, keep the form working */ });
+
+    function initMap() {
     const lat = s.shop.lat || 22.0667;
     const lng = s.shop.lng || 88.0698;
 
@@ -58,6 +102,9 @@ export default function Settings() {
 
     // Fix map rendering issues
     setTimeout(() => map.invalidateSize(), 200);
+    }
+
+    return () => { cancelled = true; };
   }, [s]);
 
   // Update marker when lat/lng change from manual input
@@ -303,7 +350,7 @@ export default function Settings() {
           </div>
           <div style={{ flex: 2 }}>
             <label>WhatsApp pre-filled message</label>
-            <input value={sup.whatsapp_message || ""} placeholder="Hi Royaall Wool, I have a question about your yarns." onChange={(e) => setSup("whatsapp_message", e.target.value)} />
+            <input value={sup.whatsapp_message || ""} placeholder="Hi, I have a question about your plants." onChange={(e) => setSup("whatsapp_message", e.target.value)} />
           </div>
         </div>
 
@@ -337,7 +384,7 @@ export default function Settings() {
             </div>
             <div style={{ flex: 3 }}>
               <label>Link</label>
-              <input value={row.href || ""} placeholder="https://instagram.com/royaallwool" onChange={(e) => updSocial(i, "href", e.target.value)} />
+              <input value={row.href || ""} placeholder="https://instagram.com/yourhandle" onChange={(e) => updSocial(i, "href", e.target.value)} />
             </div>
             <button className="btn danger sm" onClick={() => setSocials(socials.filter((_, idx) => idx !== i))}>Remove</button>
           </div>

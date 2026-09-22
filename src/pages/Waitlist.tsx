@@ -98,7 +98,7 @@ export default function Waitlist() {
       <div className="dashboard-header">
         <div>
           <h1 className="dashboard-title">Restock Waitlist</h1>
-          <p className="dashboard-subtitle">See which out-of-stock yarns your customers are waiting for the most.</p>
+          <p className="dashboard-subtitle">See which out-of-stock plants your customers are waiting for the most.</p>
           <p style={{ margin: "10px 0 0", fontSize: 13, color: "#16a34a", fontWeight: 600 }}>
             ✓ Fully automatic — the moment you update a shade's stock in Products, everyone waiting for it is emailed and cleared from this list. No action needed here.
           </p>
