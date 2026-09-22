@@ -114,6 +114,9 @@ export default function Settings() {
   const setShop = (k: string, v: any) => setS((p: any) => ({ ...p, shop: { ...p.shop, [k]: v } }));
   const setDel = (k: string, v: any) => setS((p: any) => ({ ...p, delivery: { ...p.delivery, [k]: v } }));
 
+  const cod = s.cod || {};
+  const setCod = (k: string, v: any) => setS((p: any) => ({ ...p, cod: { ...(p.cod || {}), [k]: v } }));
+
   const sup = s.support || {};
   const setSup = (k: string, v: any) =>
     setS((p: any) => ({ ...p, support: { ...(p.support || {}), [k]: v } }));
@@ -160,6 +163,13 @@ export default function Settings() {
           rest_base_fee: Number(s.delivery.rest_base_fee || 0),
           rest_base_weight_kg: Number(s.delivery.rest_base_weight_kg || 1),
           rest_extra_fee_per_kg: Number(s.delivery.rest_extra_fee_per_kg || 0),
+        },
+        cod: {
+          enabled: cod.enabled !== false,
+          // 0 means "no ceiling" — the checkout reads it that way too.
+          max_order: Number(cod.max_order || 0),
+          label: cod.label || "Cash on Delivery",
+          note: cod.note || "",
         },
         support: {
           ...(s.support || {}),
@@ -359,6 +369,33 @@ export default function Settings() {
           </div>
         </div>
         
+        <div style={{ marginTop: 24, paddingTop: 20, borderTop: "1px solid #e8e8ec" }}>
+          <h4 style={{ margin: "0 0 8px 0" }}>Cash on Delivery</h4>
+          <div className="row">
+            <div>
+              <label>Offer COD at checkout</label>
+              <select value={cod.enabled === false ? "off" : "on"} onChange={(e) => setCod("enabled", e.target.value === "on")}>
+                <option value="on">Yes — show Cash on Delivery</option>
+                <option value="off">No — online payment only</option>
+              </select>
+            </div>
+            <div>
+              <label>Maximum COD order value ₹ (0 = no limit)</label>
+              <input type="number" value={cod.max_order ?? 20000} onChange={(e) => setCod("max_order", e.target.value)} />
+            </div>
+          </div>
+          <div className="row">
+            <div style={{ flex: 1 }}>
+              <label>Note shown under the COD option</label>
+              <input
+                value={cod.note ?? ""}
+                placeholder="Pay in cash to our delivery partner when your plants reach your doorstep."
+                onChange={(e) => setCod("note", e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
         <p className="muted" style={{ marginTop: 16 }}>
           Example: In {s.delivery.home_state || "Home State"}, up to {s.delivery.home_base_weight_kg || 1}Kg costs ₹{s.delivery.home_base_fee || 0}. Every additional Kg costs ₹{s.delivery.home_extra_fee_per_kg || 0}.
         </p>

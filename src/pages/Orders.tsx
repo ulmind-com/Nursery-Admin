@@ -41,7 +41,7 @@ const buildOrderMessage = (o: any) => {
   lines.push("");
   lines.push(`🛒 *Items (${o.items?.length || 0})*`);
   (o.items || []).forEach((it: any, i: number) => {
-    const variant = [it.color, it.size].filter(Boolean).join(" · ");
+    const variant = [it.size_variant ?? it.color, it.pot_type ?? it.size].filter(Boolean).join(" · ");
     lines.push(`${i + 1}. ${it.title}${variant ? ` (${variant})` : ""}`);
     lines.push(`   Product ID: ${it.product_id}`);
     lines.push(`   Qty: ${it.qty} × ₹${it.price} = ₹${(it.price * it.qty).toFixed(2)}`);
@@ -336,7 +336,7 @@ export default function Orders() {
                             {o.items?.map((it: any, i: number) => (
                               <tr key={i}>
                                 <td><img className="thumb" src={it.image || "https://via.placeholder.com/40"} /></td>
-                                <td>{it.title}{it.color ? ` · ${it.color}` : ""}{it.size ? ` · ${it.size}` : ""}</td>
+                                <td>{it.title}{[it.size_variant ?? it.color, it.pot_type ?? it.size].filter(Boolean).map((v: string) => ` · ${v}`).join("")}</td>
                                 <td>x{it.qty}</td>
                                 <td>₹{(it.price * it.qty).toFixed(2)}</td>
                               </tr>

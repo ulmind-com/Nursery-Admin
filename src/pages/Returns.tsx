@@ -62,7 +62,7 @@ export default function Returns() {
                   <td style={{ maxWidth: 240 }}>
                     {(r.items || []).map((it: any, i: number) => (
                       <div key={i} style={{ fontSize: 13 }}>
-                        {it.title} <span className="muted">×{it.qty}{it.size ? ` · ${it.size}` : ""}{it.color ? ` · ${it.color}` : ""}</span>
+                        {it.title} <span className="muted">×{it.qty}{[it.size_variant ?? it.color, it.pot_type ?? it.size].filter(Boolean).map((v: string) => ` · ${v}`).join("")}</span>
                       </div>
                     ))}
                   </td>
