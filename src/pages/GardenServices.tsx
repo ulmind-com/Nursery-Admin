@@ -57,8 +57,6 @@ export default function GardenServices() {
   const [items, setItems] = useState<Service[]>([]);
   const [blocks, setBlocks] = useState<Record<string, Block[]>>({});
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
-  const [gift, setGift] = useState<Record<string, any>>({});
-  const [giftSaved, setGiftSaved] = useState(false);
 
   const [f, setF] = useState({ ...emptyService });
   const [editId, setEditId] = useState<string | null>(null);
@@ -73,8 +71,7 @@ export default function GardenServices() {
       .then((d) => { setSection(d.section || {}); setItems(d.items || []); setBlocks(d.blocks || {}); })
       .catch((e: any) => setErr(e.message));
   const loadEnquiries = () => api.get<Enquiry[]>("/garden-services/enquiries").then(setEnquiries).catch(() => {});
-  const loadGift = () => api.get<Record<string, any>>("/gifting").then(setGift).catch(() => {});
-  useEffect(() => { load(); loadEnquiries(); loadGift(); }, []);
+  useEffect(() => { load(); loadEnquiries(); }, []);
 
   const setS = (k: string, v: any) => setSection((p) => ({ ...p, [k]: v }));
   const lines = (k: string) => (section[k] || []).join("\n");
@@ -83,13 +80,6 @@ export default function GardenServices() {
   const saveSection = async () => {
     setErr(""); setSaved(false);
     try { const res = await api.put("/garden-services/section", section); setSection(res); setSaved(true); setTimeout(() => setSaved(false), 3000); }
-    catch (e: any) { setErr(e.message); }
-  };
-
-  const setG = (k: string, v: any) => setGift((p) => ({ ...p, [k]: v }));
-  const saveGift = async () => {
-    setErr(""); setGiftSaved(false);
-    try { setGift(await api.put("/gifting", gift)); setGiftSaved(true); setTimeout(() => setGiftSaved(false), 3000); }
     catch (e: any) { setErr(e.message); }
   };
 
@@ -306,31 +296,6 @@ export default function GardenServices() {
           </table>
         )}
         {items.length === 0 && <p className="muted">No services yet — the page shows its bundled samples until you add one.</p>}
-      </div>
-
-      <div className="card">
-        <h3 style={{ marginTop: 0 }}>Gifting band <span className="muted" style={{ fontWeight: 400 }}>· home page, under Garden Services</span></h3>
-        <label>Heading — press Enter for the line break</label>
-        <textarea rows={2} value={gift.title || ""} onChange={(e) => setG("title", e.target.value)} placeholder={"Green gifting,\nmade easy."} />
-        <label>Body copy</label>
-        <textarea rows={3} value={gift.body || ""} onChange={(e) => setG("body", e.target.value)} placeholder="Festive hampers. Onboarding kits. Office refreshes. GST invoicing." />
-        <label>Highlight line (shown in yellow)</label>
-        <input value={gift.brands_line || ""} onChange={(e) => setG("brands_line", e.target.value)} placeholder="Trusted by 50+ brands across India" />
-        <PhotoField label="Band photo — wide landscape, subject to the right" value={gift.image || ""} onChange={(v) => setG("image", v)} />
-        <div className="row">
-          <div><label>Primary button</label><input value={gift.primary_label || ""} onChange={(e) => setG("primary_label", e.target.value)} placeholder="Shop Hampers" /></div>
-          <div><label>Primary link</label><input value={gift.primary_url || ""} onChange={(e) => setG("primary_url", e.target.value)} placeholder="/combos" /></div>
-        </div>
-        <div className="row">
-          <div><label>Secondary button</label><input value={gift.secondary_label || ""} onChange={(e) => setG("secondary_label", e.target.value)} placeholder="Bulk Order" /></div>
-          <div><label>Secondary link</label><input value={gift.secondary_url || ""} onChange={(e) => setG("secondary_url", e.target.value)} placeholder="/contact" /></div>
-        </div>
-        <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
-          <input type="checkbox" checked={gift.active !== false} onChange={(e) => setG("active", e.target.checked)} style={{ width: "auto", margin: 0 }} />
-          Show this band on the home page
-        </label>
-        {giftSaved && <div className="muted">Saved ✓</div>}
-        <button className="btn" style={{ marginTop: 14 }} onClick={saveGift}>Save gifting band</button>
       </div>
 
       <div className="card">
