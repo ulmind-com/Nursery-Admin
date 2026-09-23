@@ -11,6 +11,7 @@ import Coupons from "./pages/Coupons";
 import Dashboard from "./pages/Dashboard";
 import HomeLayout from "./pages/HomeLayout";
 import Stores from "./pages/Stores";
+import GardenServices from "./pages/GardenServices";
 import Login from "./pages/Login";
 import Orders from "./pages/Orders";
 import ProductEditor from "./pages/ProductEditor";
@@ -80,6 +81,7 @@ export default function App() {
         <Route path="/orders" element={<Sec k="orders"><Orders /></Sec>} />
         <Route path="/users" element={<Sec k="users"><Users /></Sec>} />
         <Route path="/home-layout" element={<Sec k="home-layout"><HomeLayout /></Sec>} />
+        <Route path="/garden-services" element={<Sec k="garden-services"><GardenServices /></Sec>} />
         <Route path="/stores" element={<Sec k="stores"><Stores /></Sec>} />
         <Route path="/blog" element={<Sec k="blog"><Blog /></Sec>} />
         <Route path="/reviews" element={<Sec k="reviews"><Reviews /></Sec>} />
