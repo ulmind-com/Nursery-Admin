@@ -174,7 +174,12 @@ export default function GardenServices() {
         </div>
         <label>Hero button label</label>
         <input value={section.hero_cta_label || ""} onChange={(e) => setS("hero_cta_label", e.target.value)} placeholder="Book service" />
-        <PhotoField label="Hero background photo — wide landscape" value={section.hero_image || ""} onChange={(v) => setS("hero_image", v)} />
+        <PhotoField label="Hero photo — wide landscape (roughly 3:1)" value={section.hero_image || ""} onChange={(v) => setS("hero_image", v)} />
+        <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+          <input type="checkbox" checked={!!section.hero_overlay} onChange={(e) => setS("hero_overlay", e.target.checked)} style={{ width: "auto", margin: 0 }} />
+          Draw the heading and button over the photo
+        </label>
+        <p className="muted">Leave this off when the artwork already has the headline and button printed on it — the bundled hero does. Turn it on after uploading a plain photo.</p>
       </div>
 
       <div className="card">
