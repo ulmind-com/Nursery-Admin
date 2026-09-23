@@ -38,7 +38,7 @@ export default function Layout() {
           color: 'rgba(255,255,255,0.4)',
           textAlign: 'center'
         }}>
-          🌱 Plant Nursery Admin v1.0
+          🌱 MyGarden Admin v1.0
         </div>
       </aside>
       <div className="main">

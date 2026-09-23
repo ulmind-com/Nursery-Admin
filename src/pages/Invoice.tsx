@@ -185,7 +185,7 @@ export default function Invoice() {
       {/* Footer / Signature */}
       <div style={{ marginTop: 80, borderTop: "1px solid #e2e8f0", paddingTop: 20, textAlign: "center", fontSize: 12, color: "#64748b" }}>
         <p>This is a computer generated invoice and does not require a signature.</p>
-        <p>Thank you for shopping with Plant Nursery!</p>
+        <p>Thank you for shopping with MyGarden!</p>
       </div>
 
       {/* Action Button (Hidden on Print) */}

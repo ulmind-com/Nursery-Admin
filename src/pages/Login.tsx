@@ -66,7 +66,7 @@ export default function Login() {
         </form>
 
         <div className="login-footer">
-          🌱 Plant Nursery Admin Panel • Powered by FastAPI
+          🌱 MyGarden Admin Panel • Powered by FastAPI
         </div>
       </div>
     </div>

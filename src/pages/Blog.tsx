@@ -33,7 +33,7 @@ const TAGS = ["Journal", "Featured", "Guides", "Behind the scenes", "Care", "Pat
 const today = () => new Date().toISOString().slice(0, 10);
 
 const empty = (): Post => ({
-  title: "", slug: "", excerpt: "", image: "", author: "Plant Nursery", tag: "Journal",
+  title: "", slug: "", excerpt: "", image: "", author: "MyGarden", tag: "Journal",
   published_at: today(), body: [{ type: "p", text: "", url: "" }],
   link: "", link_label: "", featured: false, published: true, order: 0,
 });

@@ -25,7 +25,7 @@ const buildOrderMessage = (o: any) => {
   const addr = [o.address?.house, o.address?.area, o.address?.city, o.address?.state, o.address?.pincode]
     .filter(Boolean).join(", ");
   const lines: string[] = [];
-  lines.push("🌿 *Plant Nursery — Order Details*");
+  lines.push("🌿 *MyGarden — Order Details*");
   lines.push("");
   lines.push(`*Order:* ${orderId}`);
   lines.push(`*Date:* ${fmtDate(o.created_at)}`);
