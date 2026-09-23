@@ -223,6 +223,11 @@ export default function HomeLayout() {
       return alert("Pick at least one product");
     if (editing.type === "category" && !editing.category_id)
       return alert("Choose a category");
+    /* Two rails with the same heading read as a duplicate on the storefront,
+       and the site drops the second one, so catch it here instead. */
+    const title = editing.title.trim().toLowerCase();
+    if (sections.some((s) => s.id !== editing.id && s.title.trim().toLowerCase() === title))
+      return alert(`A section called "${editing.title.trim()}" already exists. Give this one a different heading.`);
     setSaving(true);
     try {
       const body = { ...editing, title: editing.title.trim() };
