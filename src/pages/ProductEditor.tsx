@@ -195,7 +195,18 @@ export default function ProductEditor() {
             <label>Category</label>
             <select value={f.category_id} onChange={(e) => set("category_id", e.target.value)}>
               <option value="">— none —</option>
-              {cats.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+              {/* Top-level categories first, each followed by its sub-categories */}
+              {cats.filter((c) => !c.parent_id).map((parent) => {
+                const kids = cats.filter((c) => c.parent_id === parent.id);
+                return kids.length ? (
+                  <optgroup key={parent.id} label={parent.name}>
+                    <option value={parent.id}>{parent.name} (all)</option>
+                    {kids.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  </optgroup>
+                ) : (
+                  <option key={parent.id} value={parent.id}>{parent.name}</option>
+                );
+              })}
             </select>
           </div>
         </div>
