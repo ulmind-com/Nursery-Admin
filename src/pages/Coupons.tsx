@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../api";
 import { fmtDate } from "../date";
+import DeleteButton from "../components/DeleteButton";
 
 const empty = { code: "", type: "percent", value: 10, min_order: 0, max_discount: 0, active: true, first_order_only: false, free_shipping: false, usage_limit: 0, limit_per_user: 0, valid_from: "", valid_until: "", description: "" };
 
@@ -43,7 +44,8 @@ export default function Coupons() {
   };
 
   const toggle = async (c: any) => { await api.patch(`/coupons/${c.id}`, { active: !c.active }); load(); };
-  const del = async (id: string) => { if (confirm("Delete coupon?")) { await api.del(`/coupons/${id}`); if (editId === id) reset(); load(); } };
+  const del = (id: string) => api.del(`/coupons/${id}`);
+  const afterDel = (id: string) => { if (editId === id) reset(); load(); };
 
   return (
     <>
@@ -116,7 +118,7 @@ export default function Coupons() {
                 <td><button className="btn ghost sm" onClick={() => toggle(c)}>{c.active ? "Active ✓" : "Inactive"}</button></td>
                 <td className="flex">
                   <button className="btn ghost sm" onClick={() => edit(c)}>Edit</button>
-                  <button className="btn danger sm" onClick={() => del(c.id)}>Delete</button>
+                  <DeleteButton confirm={`Delete coupon ${c.code}?`} onDelete={() => del(c.id)} onDone={() => afterDel(c.id)} />
                 </td>
               </tr>
             ))}

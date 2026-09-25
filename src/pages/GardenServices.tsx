@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { api, uploadImage } from "../api";
+import DeleteButton from "../components/DeleteButton";
 import { fmtDate } from "../date";
 
 type Section = Record<string, any>;
@@ -288,7 +289,11 @@ export default function GardenServices() {
                   </td>
                   <td className="flex">
                     <button className="btn ghost sm" onClick={() => editService(s)}>Edit</button>
-                    <button className="btn danger sm" onClick={async () => { if (confirm(`Delete "${s.title}"?`)) { await api.del(`/garden-services/${s.id}`); if (editId === s.id) resetService(); load(); } }}>Delete</button>
+                    <DeleteButton
+                      confirm={`Delete "${s.title}"?`}
+                      onDelete={() => api.del(`/garden-services/${s.id}`)}
+                      onDone={() => { if (editId === s.id) resetService(); load(); }}
+                    />
                   </td>
                 </tr>
               ))}
@@ -357,7 +362,11 @@ export default function GardenServices() {
                   </td>
                   <td className="flex">
                     <button className="btn ghost sm" onClick={() => editBlock(item)}>Edit</button>
-                    <button className="btn danger sm" onClick={async () => { if (confirm("Delete this item?")) { await api.del(`/garden-services/blocks/${item.id}`); if (editBlockId === item.id) resetBlock(); load(); } }}>Delete</button>
+                    <DeleteButton
+                      confirm="Delete this item?"
+                      onDelete={() => api.del(`/garden-services/blocks/${item.id}`)}
+                      onDone={() => { if (editBlockId === item.id) resetBlock(); load(); }}
+                    />
                   </td>
                 </tr>
               ))}
@@ -385,7 +394,13 @@ export default function GardenServices() {
                   <td>{e.location || "—"}</td>
                   <td>{e.service || "—"}</td>
                   <td><button className="btn ghost sm" onClick={async () => { await api.patch(`/garden-services/enquiries/${e.id}`, { handled: !e.handled }); loadEnquiries(); }}>{e.handled ? "Handled ✓" : "Mark handled"}</button></td>
-                  <td><button className="btn danger sm" onClick={async () => { if (confirm(`Delete request from ${e.name}?`)) { await api.del(`/garden-services/enquiries/${e.id}`); loadEnquiries(); } }}>Delete</button></td>
+                  <td>
+                    <DeleteButton
+                      confirm={`Delete request from ${e.name}?`}
+                      onDelete={() => api.del(`/garden-services/enquiries/${e.id}`)}
+                      onDone={loadEnquiries}
+                    />
+                  </td>
                 </tr>
               ))}
             </tbody>

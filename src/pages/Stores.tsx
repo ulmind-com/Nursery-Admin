@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { api, uploadImage } from "../api";
+import DeleteButton from "../components/DeleteButton";
 
 type Store = {
   id: string;
@@ -71,7 +72,8 @@ export default function Stores() {
   };
 
   const toggle = async (s: Store) => { await api.patch(`/stores/${s.id}`, { active: !(s.active !== false) }); load(); };
-  const del = async (s: Store) => { if (confirm(`Delete ${s.name}?`)) { await api.del(`/stores/${s.id}`); if (editId === s.id) reset(); load(); } };
+  const del = (s: Store) => api.del(`/stores/${s.id}`);
+  const afterDel = (s: Store) => { if (editId === s.id) reset(); load(); };
 
   const moveCity = async (city: string, delta: number) => {
     const next = [...cities];
@@ -185,7 +187,7 @@ export default function Stores() {
                     </td>
                     <td className="flex">
                       <button className="btn ghost sm" onClick={() => edit(s)}>Edit</button>
-                      <button className="btn danger sm" onClick={() => del(s)}>Delete</button>
+                      <DeleteButton confirm={`Delete ${s.name}?`} onDelete={() => del(s)} onDone={() => afterDel(s)} />
                     </td>
                   </tr>
                 ))}

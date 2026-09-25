@@ -13,6 +13,7 @@ export const SECTIONS: Section[] = [
   { key: "users",         label: "Customers",            path: "/users",                    icon: "👥" },
   { key: "reviews",       label: "Plant Reviews",        path: "/reviews",                  icon: "⭐" },
   { key: "coupons",       label: "Discount Codes",       path: "/coupons",                  icon: "🏷️" },
+  { key: "page-builder",  label: "Home Page Builder",    path: "/page-builder",             icon: "🧱" },
   { key: "home-layout",   label: "Storefront Layout",    path: "/home-layout",              icon: "🎨" },
   { key: "home-bands",    label: "Home Bands",           path: "/home-bands",               icon: "🏷️" },
   { key: "garden-services", label: "Garden Services",      path: "/garden-services",          icon: "🌱" },

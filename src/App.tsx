@@ -10,6 +10,7 @@ import Combos from "./pages/Combos";
 import Coupons from "./pages/Coupons";
 import Dashboard from "./pages/Dashboard";
 import HomeLayout from "./pages/HomeLayout";
+import PageBuilder from "./pages/PageBuilder";
 import Stores from "./pages/Stores";
 import GardenServices from "./pages/GardenServices";
 import HomeBands from "./pages/HomeBands";
@@ -81,6 +82,7 @@ export default function App() {
         <Route path="/coupons" element={<Sec k="coupons"><Coupons /></Sec>} />
         <Route path="/orders" element={<Sec k="orders"><Orders /></Sec>} />
         <Route path="/users" element={<Sec k="users"><Users /></Sec>} />
+        <Route path="/page-builder" element={<Sec k="page-builder"><PageBuilder /></Sec>} />
         <Route path="/home-layout" element={<Sec k="home-layout"><HomeLayout /></Sec>} />
         <Route path="/home-bands" element={<Sec k="home-bands"><HomeBands /></Sec>} />
         <Route path="/garden-services" element={<Sec k="garden-services"><GardenServices /></Sec>} />

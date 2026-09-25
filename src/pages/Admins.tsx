@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { api } from "../api";
+import DeleteButton from "../components/DeleteButton";
 import { fmtDateTime } from "../date";
 import { ALL_SECTION_KEYS, SECTIONS } from "../sections";
 
@@ -80,11 +81,7 @@ export default function Admins() {
     } catch (e: any) { setErr(e.message); }
   };
 
-  const revoke = async (a: any) => {
-    if (!confirm(`Revoke admin access for ${a.email}? They will no longer be able to log in to the panel.`)) return;
-    try { await api.del(`/admins/${a.id}`); loadAdmins(); }
-    catch (e: any) { alert(e.message); }
-  };
+  const revoke = (a: any) => api.del(`/admins/${a.id}`);
 
   const startEdit = (a: any) => {
     setEditId(a.id);
@@ -143,7 +140,14 @@ export default function Admins() {
                   <td className="flex">
                     <button className="btn ghost sm" onClick={() => applyFilter(a.id)}>Activity</button>
                     {!a.is_super && <button className="btn ghost sm" onClick={() => (editId === a.id ? setEditId(null) : startEdit(a))}>{editId === a.id ? "Close" : "Edit access"}</button>}
-                    {!a.is_super && <button className="btn danger sm" onClick={() => revoke(a)}>Revoke</button>}
+                    {!a.is_super && (
+                      <DeleteButton
+                        label="Revoke"
+                        confirm={`Revoke admin access for ${a.email}? They will no longer be able to log in to the panel.`}
+                        onDelete={() => revoke(a)}
+                        onDone={loadAdmins}
+                      />
+                    )}
                   </td>
                 </tr>
                 {editId === a.id && (

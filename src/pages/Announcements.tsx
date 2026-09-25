@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api";
+import DeleteButton from "../components/DeleteButton";
 
 export default function Announcements() {
   const [s, setS] = useState<any>(null);
@@ -157,7 +158,7 @@ export default function Announcements() {
                 style={{ border: "none", padding: 0, fontSize: 15, background: "transparent", fontWeight: 500 }}
               />
             </div>
-            <button className="btn danger sm" onClick={() => removeItem(idx)}>Remove</button>
+            <DeleteButton label="Remove" onDelete={() => undefined} onDone={() => removeItem(idx)} />
           </div>
         ))}
         {items.length === 0 && <p className="muted">No announcements. The marquee will be hidden.</p>}

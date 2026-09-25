@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "../api";
+import DeleteButton from "../components/DeleteButton";
 
 const empty = {
   name: "", description: "", qty: 3, price: 300, product_ids: [] as string[],
@@ -30,7 +31,9 @@ export default function Combos() {
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
-  const load = () => api.get("/combos").then(setItems).catch(() => {});
+  /* `all` keeps expired and switched-off bundles in this table — the public
+     list only carries the ones currently running. */
+  const load = () => api.get("/combos?all=true").then(setItems).catch(() => {});
   const loadProducts = () => api.get("/products?admin=true&limit=100").then(setProducts).catch(() => {});
   
   useEffect(() => { load(); loadProducts(); }, []);
@@ -87,16 +90,8 @@ export default function Combos() {
       alert(e.message);
     }
   };
-  const del = async (id: string) => {
-    if (!confirm("Delete combo?")) return;
-    try {
-      await api.del(`/combos/${id}`);
-      if (editId === id) reset();
-      load();
-    } catch (e: any) {
-      alert(e.message);
-    }
-  };
+  const del = (id: string) => api.del(`/combos/${id}`);
+  const afterDel = (id: string) => { if (editId === id) reset(); load(); };
 
   const toggleProduct = (pid: string) => {
     const ids = f.product_ids.includes(pid)
@@ -369,7 +364,7 @@ export default function Combos() {
                 <td><button className="btn ghost sm" onClick={() => toggle(c)}>{c.active ? "Active ✓" : "Inactive"}</button></td>
                 <td className="flex">
                   <button className="btn ghost sm" onClick={() => edit(c)}>Edit</button>
-                  <button className="btn danger sm" onClick={() => del(c.id)}>Delete</button>
+                  <DeleteButton confirm={`Delete combo ${c.name}?`} onDelete={() => del(c.id)} onDone={() => afterDel(c.id)} />
                 </td>
               </tr>
             ))}

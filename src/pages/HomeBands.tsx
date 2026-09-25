@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { api, uploadImage } from "../api";
+import DeleteButton from "../components/DeleteButton";
 
 type Logo = { id: string; name: string; image: string; url?: string; order?: number; active?: boolean };
 
@@ -174,7 +175,11 @@ export default function HomeBands() {
                   </td>
                   <td className="flex">
                     <button className="btn ghost sm" onClick={() => { setL({ name: logo.name, image: logo.image, url: logo.url || "", active: logo.active !== false }); setEditId(logo.id); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Edit</button>
-                    <button className="btn danger sm" onClick={async () => { if (confirm(`Delete ${logo.name}?`)) { await api.del(`/press/${logo.id}`); if (editId === logo.id) resetLogo(); loadPress(); } }}>Delete</button>
+                    <DeleteButton
+                      confirm={`Delete ${logo.name}?`}
+                      onDelete={() => api.del(`/press/${logo.id}`)}
+                      onDone={() => { if (editId === logo.id) resetLogo(); loadPress(); }}
+                    />
                   </td>
                 </tr>
               ))}

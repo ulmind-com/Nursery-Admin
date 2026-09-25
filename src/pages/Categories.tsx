@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api, uploadImage } from "../api";
+import DeleteButton from "../components/DeleteButton";
 
 const slug = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const thumb = (size = 44): React.CSSProperties => ({
@@ -53,10 +54,7 @@ export default function Categories() {
     await api.patch(`/categories/${id}`, { blurb: text.trim() });
     load();
   };
-  const del = async (id: string, name: string) => {
-    if (!confirm(`Delete "${name}"?`)) return;
-    await api.del(`/categories/${id}`); load();
-  };
+  const del = (id: string) => api.del(`/categories/${id}`);
 
   const FallbackImage = ({ size = 44 }) => (
     <div style={{ width: size, height: size, borderRadius: 12, background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #e2e8f0" }}>
@@ -190,10 +188,7 @@ export default function Categories() {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: 6, verticalAlign: "text-bottom" }}><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 Add Sub-category
               </button>
-              <button className="btn ghost" onClick={() => del(c.id, c.name)} style={{ color: "#ef4444", background: "#fef2f2" }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: 4, verticalAlign: "text-bottom" }}><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                Delete
-              </button>
+              <DeleteButton confirm={`Delete "${c.name}"?`} onDelete={() => del(c.id)} onDone={load} />
             </div>
           </div>
 
@@ -244,7 +239,7 @@ export default function Categories() {
                           {s.image ? "Change Photo" : "Add Photo"}
                           <input type="file" accept="image/*" hidden onChange={(e) => setCatImage(s.id, e.target.files?.[0])} />
                         </label>
-                        <button className="btn ghost sm" onClick={() => del(s.id, s.name)} style={{ color: "#ef4444" }}>Delete</button>
+                        <DeleteButton confirm={`Delete "${s.name}"?`} onDelete={() => del(s.id)} onDone={load} />
                       </td>
                     </tr>
                   ))}

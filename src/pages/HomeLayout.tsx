@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api, uploadImage } from "../api";
+import DeleteButton from "../components/DeleteButton";
 
 type Section = {
   id?: string;
@@ -170,11 +171,7 @@ export default function HomeLayout() {
     }
   };
 
-  const deleteMedia = async (item: SiteMediaItem) => {
-    if (!item.id || !confirm("Delete this media item?")) return;
-    await api.del(`/site-media/${item.id}`);
-    await loadMedia();
-  };
+  const deleteMedia = (item: SiteMediaItem) => api.del(`/site-media/${item.id}`);
 
   const toggleMediaActive = async (item: SiteMediaItem) => {
     if (!item.id) return;
@@ -210,11 +207,7 @@ export default function HomeLayout() {
     load();
   };
 
-  const remove = async (s: Section) => {
-    if (!confirm(`Delete section "${s.title}"?`)) return;
-    await api.del(`/home-sections/${s.id}`);
-    load();
-  };
+  const remove = (s: Section) => api.del(`/home-sections/${s.id}`);
 
   const save = async () => {
     if (!editing) return;
@@ -298,9 +291,15 @@ export default function HomeLayout() {
       {/* ── Site Media Tab ── */}
       {tab === "media" && (
         <>
-          <p className="muted" style={{ marginTop: -6 }}>
-            Upload and manage images for home page sections. Changes appear on the website immediately.
-          </p>
+          {/* The home page now renders from Home Page Builder, so the slots below
+              no longer feed it. Kept for any page still reading site media. */}
+          <div className="card" style={{ borderLeft: "4px solid var(--accent)" }}>
+            <strong>Home page artwork has moved.</strong>
+            <p className="muted" style={{ margin: "6px 0 0" }}>
+              Edit the home page's images, clips and copy in <a href="/page-builder">Home Page Builder</a>. The slots
+              below are from the older layout and no longer change the home page.
+            </p>
+          </div>
 
           {/* Media section tabs */}
           <div className="flex" style={{ gap: 6, flexWrap: "wrap", marginTop: 12, marginBottom: 16 }}>
@@ -386,7 +385,7 @@ export default function HomeLayout() {
                               }}
                             />
                           </label>
-                          <button className="btn danger sm" onClick={() => deleteMedia(item)}>Delete</button>
+                          <DeleteButton confirm="Delete this media item?" onDelete={() => deleteMedia(item)} onDone={loadMedia} />
                         </div>
                       </div>
                     </div>
@@ -496,7 +495,7 @@ export default function HomeLayout() {
                 </td>
                 <td style={{ whiteSpace: "nowrap" }}>
                   <button className="btn ghost sm" onClick={() => setEditing({ ...s })}>Edit</button>{" "}
-                  <button className="btn danger sm" onClick={() => remove(s)}>Delete</button>
+                  <DeleteButton confirm={`Delete section "${s.title}"?`} onDelete={() => remove(s)} onDone={load} />
                 </td>
               </tr>
             ))}

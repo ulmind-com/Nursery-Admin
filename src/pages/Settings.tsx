@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "../api";
+import DeleteButton from "../components/DeleteButton";
 
 declare const L: any; // Leaflet, lazy-loaded from CDN by ensureLeaflet()
 
@@ -386,7 +387,11 @@ export default function Settings() {
               <label>Link</label>
               <input value={row.href || ""} placeholder="https://instagram.com/yourhandle" onChange={(e) => updSocial(i, "href", e.target.value)} />
             </div>
-            <button className="btn danger sm" onClick={() => setSocials(socials.filter((_, idx) => idx !== i))}>Remove</button>
+            <DeleteButton
+              label="Remove"
+              onDelete={() => undefined}
+              onDone={() => setSocials(socials.filter((_, idx) => idx !== i))}
+            />
           </div>
         ))}
       </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api";
+import DeleteButton from "../components/DeleteButton";
 
 export default function Products() {
   const [items, setItems] = useState<any[]>([]);
@@ -24,11 +25,8 @@ export default function Products() {
 
   useEffect(() => { load(); loadCats(); }, []);
 
-  const del = async (id: string, title: string) => {
-    if (!confirm(`Delete "${title}"?`)) return;
-    await api.del(`/products/${id}`);
-    setItems((p) => p.filter((x) => x.id !== id));
-  };
+  const del = (id: string) => api.del(`/products/${id}`);
+  const afterDel = (id: string) => setItems((p) => p.filter((x) => x.id !== id));
 
   const filteredItems = items.filter((p) => {
     if (search && !p.title.toLowerCase().includes(search.toLowerCase()) && !(p.sku || "").toLowerCase().includes(search.toLowerCase()) && !(p.plant_spec?.scientific_name || "").toLowerCase().includes(search.toLowerCase())) return false;
@@ -123,7 +121,7 @@ export default function Products() {
                     </td>
                     <td className="flex">
                       <Link to={`/products/${p.id}`} className="btn ghost sm">Edit</Link>
-                      <button className="btn danger sm" onClick={() => del(p.id, p.title)}>Delete</button>
+                      <DeleteButton confirm={`Delete "${p.title}"?`} onDelete={() => del(p.id)} onDone={() => afterDel(p.id)} />
                     </td>
                   </tr>
                   

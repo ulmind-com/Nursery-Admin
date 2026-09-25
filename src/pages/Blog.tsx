@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { api, uploadImage } from "../api";
+import DeleteButton from "../components/DeleteButton";
 
 type BlockType = "p" | "h2" | "quote" | "link";
 interface Block { type: BlockType; text: string; url: string }
@@ -77,11 +78,7 @@ export default function Blog() {
     load();
   };
 
-  const del = async (p: Post) => {
-    if (!confirm(`Delete "${p.title}"? This cannot be undone.`)) return;
-    await api.del(`/blog/posts/${p.id}`);
-    load();
-  };
+  const del = (p: Post) => api.del(`/blog/posts/${p.id}`);
 
   if (editing) {
     return (
@@ -174,7 +171,7 @@ export default function Blog() {
                   <button className="btn ghost sm" onClick={() => patch(p, { featured: !p.featured })}>
                     {p.featured ? "Unfeature" : "Feature"}
                   </button>
-                  <button className="btn danger sm" onClick={() => del(p)}>Delete</button>
+                  <DeleteButton confirm={`Delete "${p.title}"? This cannot be undone.`} onDelete={() => del(p)} onDone={load} />
                 </div>
               </div>
             </article>
