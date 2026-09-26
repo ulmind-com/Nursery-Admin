@@ -20,6 +20,7 @@ import ProductEditor from "./pages/ProductEditor";
 import Products from "./pages/Products";
 import Reviews from "./pages/Reviews";
 import Settings from "./pages/Settings";
+import Support from "./pages/Support";
 import Announcements from "./pages/Announcements";
 import Users from "./pages/Users";
 import Waitlist from "./pages/Waitlist";
@@ -82,6 +83,7 @@ export default function App() {
         <Route path="/coupons" element={<Sec k="coupons"><Coupons /></Sec>} />
         <Route path="/orders" element={<Sec k="orders"><Orders /></Sec>} />
         <Route path="/users" element={<Sec k="users"><Users /></Sec>} />
+        <Route path="/support" element={<Sec k="support"><Support /></Sec>} />
         <Route path="/page-builder" element={<Sec k="page-builder"><PageBuilder /></Sec>} />
         <Route path="/home-layout" element={<Sec k="home-layout"><HomeLayout /></Sec>} />
         <Route path="/home-bands" element={<Sec k="home-bands"><HomeBands /></Sec>} />

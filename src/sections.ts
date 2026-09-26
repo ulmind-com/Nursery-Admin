@@ -11,6 +11,7 @@ export const SECTIONS: Section[] = [
   { key: "combos",        label: "Plant Bundles",        path: "/combos",                   icon: "🎁" },
   { key: "orders",        label: "Customer Orders",      path: "/orders",                   icon: "📦" },
   { key: "users",         label: "Customers",            path: "/users",                    icon: "👥" },
+  { key: "support",       label: "Support Inbox",        path: "/support",                  icon: "💬" },
   { key: "reviews",       label: "Plant Reviews",        path: "/reviews",                  icon: "⭐" },
   { key: "coupons",       label: "Discount Codes",       path: "/coupons",                  icon: "🏷️" },
   { key: "page-builder",  label: "Home Page Builder",    path: "/page-builder",             icon: "🧱" },
