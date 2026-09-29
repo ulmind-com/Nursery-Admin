@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { api } from "../api";
+import { api, uploadImage } from "../api";
 import DeleteButton from "../components/DeleteButton";
 
 declare const L: any; // Leaflet, lazy-loaded from CDN by ensureLeaflet()
@@ -44,6 +44,7 @@ export default function Settings() {
   const [mapSearch, setMapSearch] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [searching, setSearching] = useState(false);
+  const [iconBusy, setIconBusy] = useState<number | null>(null);
 
 
   const mapRef = useRef<HTMLDivElement>(null);
@@ -173,6 +174,26 @@ export default function Settings() {
   const updSocial = (i: number, k: string, v: string) =>
     setSocials(socials.map((row, idx) => (idx === i ? { ...row, [k]: v } : row)));
 
+  /* Cart reward rail — the green-and-yellow unlock bar in the storefront cart. */
+  const rw = s.rewards || {};
+  const setRw = (k: string, v: any) =>
+    setS((p: any) => ({ ...p, rewards: { ...(p.rewards || {}), [k]: v } }));
+  const stops: any[] = rw.milestones || [];
+  const setStops = (next: any[]) => setRw("milestones", next);
+  const updStop = (i: number, k: string, v: any) =>
+    setStops(stops.map((row, idx) => (idx === i ? { ...row, [k]: v } : row)));
+  const pickIcon = async (i: number, file?: File | null) => {
+    if (!file) return;
+    setIconBusy(i);
+    try {
+      updStop(i, "icon", await uploadImage(file));
+    } catch (e: any) {
+      alert(e.message || "Could not upload that image");
+    } finally {
+      setIconBusy(null);
+    }
+  };
+
 
 
   const useMyLocation = () => {
@@ -218,6 +239,25 @@ export default function Settings() {
           max_order: Number(cod.max_order || 0),
           label: cod.label || "Cash on Delivery",
           note: cod.note || "",
+        },
+        rewards: {
+          enabled: rw.enabled !== false,
+          show_in_cart: rw.show_in_cart !== false,
+          show_sticky_bar: rw.show_sticky_bar !== false,
+          teaser: rw.teaser || "Add {amount} more to unlock {reward}",
+          unlocked: rw.unlocked || "All rewards unlocked",
+          // A stop with no value is a stop the customer can never reach, so it
+          // never reaches the storefront either. Cheapest first, as displayed.
+          milestones: stops
+            .filter((row: any) => Number(row?.amount) > 0)
+            .map((row: any) => ({
+              amount: Number(row.amount),
+              label: (row.label || "").trim(),
+              caption: (row.caption || "").trim(),
+              icon: (row.icon || "").trim(),
+              kind: row.kind || "gift",
+            }))
+            .sort((a: any, b: any) => a.amount - b.amount),
         },
         support: {
           ...(s.support || {}),
@@ -391,6 +431,133 @@ export default function Settings() {
               label="Remove"
               onDelete={() => undefined}
               onDone={() => setSocials(socials.filter((_, idx) => idx !== i))}
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="card">
+        <div className="between">
+          <h3 style={{ marginTop: 0 }}>Cart reward rail</h3>
+          <button
+            className="btn ghost sm"
+            onClick={() => setStops([...stops, { amount: 0, label: "", caption: "", icon: "", kind: "gift" }])}
+          >
+            + Add reward
+          </button>
+        </div>
+        <p className="muted" style={{ marginTop: 4 }}>
+          The green-and-yellow unlock bar in the storefront cart. Each reward is one stop on the
+          rail; customers see how far they still have to go to reach the next one.
+        </p>
+
+        <div className="row" style={{ marginTop: 12 }}>
+          <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <input type="checkbox" checked={rw.enabled !== false} onChange={(e) => setRw("enabled", e.target.checked)} />
+            Show the rail
+          </label>
+          <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <input type="checkbox" checked={rw.show_in_cart !== false} onChange={(e) => setRw("show_in_cart", e.target.checked)} />
+            Inside the cart drawer
+          </label>
+          <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <input type="checkbox" checked={rw.show_sticky_bar !== false} onChange={(e) => setRw("show_sticky_bar", e.target.checked)} />
+            Floating bar on every page
+          </label>
+        </div>
+
+        <div className="row" style={{ marginTop: 12 }}>
+          <div style={{ flex: 1 }}>
+            <label>Teaser line</label>
+            <input
+              value={rw.teaser ?? ""}
+              placeholder="Add {amount} more to unlock {reward}"
+              onChange={(e) => setRw("teaser", e.target.value)}
+            />
+            <p className="muted" style={{ marginTop: 4 }}>
+              {"{amount}"} is what is still to spend, {"{reward}"} is the next reward's name.
+            </p>
+          </div>
+          <div style={{ flex: 1 }}>
+            <label>Line once everything is unlocked</label>
+            <input
+              value={rw.unlocked ?? ""}
+              placeholder="All rewards unlocked"
+              onChange={(e) => setRw("unlocked", e.target.value)}
+            />
+          </div>
+        </div>
+
+        {stops.length === 0 && (
+          <p className="muted" style={{ marginTop: 14 }}>
+            No rewards yet — the rail stays hidden on the storefront.
+          </p>
+        )}
+
+        {stops.map((row: any, i: number) => (
+          <div className="row" key={i} style={{ alignItems: "flex-end", marginTop: 12 }}>
+            <div style={{ width: 110 }}>
+              <label>Unlocks at ₹</label>
+              <input
+                type="number"
+                min={0}
+                value={row.amount ?? ""}
+                placeholder="499"
+                onChange={(e) => updStop(i, "amount", e.target.value)}
+              />
+            </div>
+            <div style={{ flex: 2 }}>
+              <label>Reward</label>
+              <input
+                value={row.label || ""}
+                placeholder="Free Shipping"
+                onChange={(e) => updStop(i, "label", e.target.value)}
+              />
+            </div>
+            <div style={{ flex: 2 }}>
+              <label>Small note (optional)</label>
+              <input
+                value={row.caption || ""}
+                placeholder="on every order"
+                onChange={(e) => updStop(i, "caption", e.target.value)}
+              />
+            </div>
+            <div style={{ width: 130 }}>
+              <label>Fallback art</label>
+              <select value={row.kind || "gift"} onChange={(e) => updStop(i, "kind", e.target.value)}>
+                <option value="shipping">Truck</option>
+                <option value="gift">Gift</option>
+                <option value="discount">Money</option>
+              </select>
+            </div>
+            <div style={{ width: 150 }}>
+              <label>Icon PNG</label>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                {row.icon ? (
+                  <img
+                    src={row.icon}
+                    alt=""
+                    style={{ width: 32, height: 32, objectFit: "contain", borderRadius: 6, background: "#f4f4f4" }}
+                  />
+                ) : null}
+                <input
+                  type="file"
+                  accept="image/png,image/webp,image/svg+xml"
+                  disabled={iconBusy === i}
+                  onChange={(e) => pickIcon(i, e.target.files?.[0])}
+                  style={{ maxWidth: 110 }}
+                />
+              </div>
+              {row.icon ? (
+                <button className="btn ghost sm" style={{ marginTop: 6 }} onClick={() => updStop(i, "icon", "")}>
+                  Use fallback
+                </button>
+              ) : null}
+            </div>
+            <DeleteButton
+              label="Remove"
+              onDelete={() => undefined}
+              onDone={() => setStops(stops.filter((_, idx) => idx !== i))}
             />
           </div>
         ))}
