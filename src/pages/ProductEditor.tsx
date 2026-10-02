@@ -13,6 +13,7 @@ const emptySpec = {
 
 const empty = {
   title: "", description: "", short_description: "", tags: [] as string[], brand: "", category_id: "",
+  extra_category_ids: [] as string[],
   mrp: 0, price: 0, discount_pct: 0, discount_on: "price",
   cgst: "" as number | string, sgst: "" as number | string, igst: "" as number | string,
   images: [] as string[],
@@ -49,6 +50,7 @@ export default function ProductEditor() {
       ...empty,
       ...p,
       category_id: p.category_id || "",
+      extra_category_ids: p.extra_category_ids || [],
       plant_spec: { ...emptySpec, ...(p.plant_spec || {}) },
       care_tips: p.care_tips || [],
       includes: p.includes || [],
@@ -99,6 +101,7 @@ export default function ProductEditor() {
       short_description: f.short_description || null,
       tags: f.tags,
       category_id: f.category_id || null,
+      extra_category_ids: f.extra_category_ids || [],
       mrp: Number(f.mrp), price: Number(f.price), discount_pct: Number(f.discount_pct),
       cgst: f.cgst === "" ? null : Number(f.cgst),
       sgst: f.sgst === "" ? null : Number(f.sgst),
@@ -210,6 +213,41 @@ export default function ProductEditor() {
             </select>
           </div>
         </div>
+        {/* Extra shelves — a plant keeps its category above and still shows on
+            every room page ticked here (Living Room, Bedroom, Balcony, Office). */}
+        {cats.some((c) => c.parent_id) && (
+          <div style={{ marginTop: 14 }}>
+            <label>Also show in</label>
+            <div style={{ fontSize: 12, color: "#666", marginBottom: 8 }}>
+              Extra collections this product appears in — the “Transform Your Home” room pages.
+            </div>
+            {cats.filter((p) => !p.parent_id && cats.some((c) => c.parent_id === p.id)).map((parent) => (
+              <div key={parent.id} style={{ marginBottom: 8 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "var(--primary-dark)" }}>{parent.name}</div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 4 }}>
+                  {cats.filter((c) => c.parent_id === parent.id).map((c) => (
+                    <label key={c.id} style={{ display: "flex", alignItems: "center", gap: 6, fontWeight: 400 }}>
+                      <input
+                        type="checkbox"
+                        style={{ width: "auto", margin: 0 }}
+                        checked={f.extra_category_ids.includes(c.id)}
+                        onChange={(e) =>
+                          set(
+                            "extra_category_ids",
+                            e.target.checked
+                              ? [...f.extra_category_ids, c.id]
+                              : f.extra_category_ids.filter((x: string) => x !== c.id),
+                          )
+                        }
+                      />
+                      {c.name}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Plant Specifications */}
